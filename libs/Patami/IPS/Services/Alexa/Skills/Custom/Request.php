@@ -854,14 +854,14 @@ abstract class Request extends BaseRequest
 	
 	protected function LoadAplUserEvent()
 	{
-		if (($this->data['request']['type'] ?? null) === self::TYPE_APL_USER_EVENT) {
-			$args = $this->data['request']['arguments'] ?? [];
-			if (!is_array($args)) { $args = []; }
-			this->aplArguments = $args;
-			$this->Debug('APL.UserEvent Arguments', json_encode($args));
-		} else {
-			$this->aplArguments = [];
-		}
+	    if (($this->data['request']['type'] ?? null) === self::TYPE_APL_USER_EVENT) {
+	        $args = $this->data['request']['arguments'] ?? [];
+	        if (!is_array($args)) { $args = []; }
+	        $this->aplArguments = $args;   // <-- hier war das fehlende $
+	        $this->Debug('APL.UserEvent Arguments', json_encode($args));
+	    } else {
+	        $this->aplArguments = [];
+	    }
 	}
 
 
