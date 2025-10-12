@@ -182,6 +182,26 @@ abstract class Request extends BaseRequest
         if (!array_key_exists('callbackIntent', $this->data['session']['attributes'])) {
             $this->data['session']['attributes']['callbackIntent'] = null;
         }
+
+        // --- Request-Struktur defensiv normalisieren ---
+        if (!isset($this->data['request']) || !is_array($this->data['request'])) {
+            $this->data['request'] = [];
+        }
+        if (!isset($this->data['request']['intent']) || !is_array($this->data['request']['intent'])) {
+            $this->data['request']['intent'] = [];
+        }
+        if (!isset($this->data['request']['intent']['slots']) || !is_array($this->data['request']['intent']['slots'])) {
+            $this->data['request']['intent']['slots'] = [];
+        }
+        if (!array_key_exists('type', $this->data['request'])) {
+            $this->data['request']['type'] = null;
+        }
+        if (!array_key_exists('locale', $this->data['request'])) {
+            $this->data['request']['locale'] = null;
+        }
+        if (!array_key_exists('name', $this->data['request']['intent'])) {
+            $this->data['request']['intent']['name'] = null;
+        }
     }
 	
 	/** @var array APL UserEvent arguments (from request.arguments) */
@@ -837,7 +857,7 @@ abstract class Request extends BaseRequest
 		if (($this->data['request']['type'] ?? null) === self::TYPE_APL_USER_EVENT) {
 			$args = $this->data['request']['arguments'] ?? [];
 			if (!is_array($args)) { $args = []; }
-			$this->aplArguments = $args;
+			this->aplArguments = $args;
 			$this->Debug('APL.UserEvent Arguments', json_encode($args));
 		} else {
 			$this->aplArguments = [];
@@ -969,6 +989,8 @@ abstract class Request extends BaseRequest
 		/** @noinspection PhpUndefinedVariableInspection */
 		return $response;
 	}
+
+
 
 
 
