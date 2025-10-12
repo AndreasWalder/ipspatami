@@ -737,22 +737,33 @@ abstract class Request extends BaseRequest
      */
     protected function ValidateConsentToken()
     {
-        // Validate consent token
-        $token = @$this->data['context']['System']['user']['permissions']['consentToken'];
-
-        // Check if consent token is set
+        // ---- Consent token defensiv lesen (ohne Kettenzugriffe) ----
+        $token = null;
+    
+        $ctx = (isset($this->data['context']) && is_array($this->data['context'])) ? $this->data['context'] : null;
+        if (is_array($ctx)) {
+            $sys = isset($ctx['System']) && is_array($ctx['System']) ? $ctx['System'] : null;
+            if (is_array($sys)) {
+                $user = isset($sys['user']) && is_array($sys['user']) ? $sys['user'] : null;
+                if (is_array($user)) {
+                    $perm = isset($user['permissions']) && is_array($user['permissions']) ? $user['permissions'] : null;
+                    if (is_array($perm) && array_key_exists('consentToken', $perm)) {
+                        $token = $perm['consentToken'];
+                    }
+                }
+            }
+        }
+    
+        // ab hier dein bestehender Code
         $this->consentToken = null;
         if (is_null($token)) {
-            // It is not set
             $this->Debug('Consent Token Validation', 'Not set');
         } else {
-            // It is set
             $this->Debug('Consent Token Validation', $token);
             if ($token == 'consentToken') {
-                // Request was sent from the service simulator
                 $this->Debug('Consent Token Validation', 'Ignoring, request is coming from the Alexa Service Simulator');
             } else {
-                if (! preg_match('/^Atza\|[0-9A-Za-z_-]{519}$/', $token)) {
+                if (!preg_match('/^Atza\|[0-9A-Za-z_-]{519}$/', $token)) {
                     $this->Debug('Consent Token Validation', 'Consent Token is invalid');
                     throw new InvalidConsentTokenException();
                 }
@@ -760,6 +771,7 @@ abstract class Request extends BaseRequest
             }
         }
     }
+
 
     /**
      * Validates the request type.
@@ -842,20 +854,26 @@ abstract class Request extends BaseRequest
      */
     protected function LoadCallbackIntent()
     {
+        // Defensiv: nichts direkt ketten
         $attrs = [];
-        if (is_array($this->data)) {
-            $session = @$this->data['session'] ?? null;
-            if (is_array($session)) {
-                $attrs = $session['attributes'] ?? [];
-            }
-        }
-        $cb = $attrs['callbackIntent'] ?? ($attrs['CallbackIntent'] ?? null);
-        $this->callbackIntent = is_string($cb) && $cb !== '' ? $cb : null;
-
+        $data  = (is_array($this->data)) ? $this->data : [];
+    
+        $session = (isset($data['session']) && is_array($data['session'])) ? $data['session'] : [];
+        $attrs   = (isset($session['attributes']) && is_array($session['attributes'])) ? $session['attributes'] : [];
+    
+        $cb = isset($attrs['callbackIntent']) && is_string($attrs['callbackIntent']) && $attrs['callbackIntent'] !== ''
+            ? $attrs['callbackIntent']
+            : (isset($attrs['CallbackIntent']) && is_string($attrs['CallbackIntent']) && $attrs['CallbackIntent'] !== ''
+                ? $attrs['CallbackIntent']
+                : null);
+    
+        $this->callbackIntent = $cb;
+    
         if ($this->callbackIntent !== null) {
             $this->Debug('Callback Intent', $this->callbackIntent);
         }
     }
+
     
     protected function LoadAplUserEvent()
     {
