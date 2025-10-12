@@ -795,14 +795,24 @@ abstract class Request extends BaseRequest
      * @see Request::$callbackIntentName
      */
     protected function LoadCallbackIntent()
-    {
-        // Load Callback Intent
-        $this->callbackIntent = @$this->data['session']['attributes']['callbackIntent'];
-
-        if ($this->callbackIntent) {
-            $this->Debug('Callback Intent', $this->callbackIntent);
-        }
-    }
+	{
+	    // Attributes defensiv holen (kein @, keine Warnings)
+	    $attrs = [];
+	    if (is_array($this->data)) {
+	        $session = $this->data['session'] ?? null;
+	        if (is_array($session)) {
+	            $attrs = $session['attributes'] ?? [];
+	        }
+	    }
+	
+	    // callbackIntent sicher lesen + normalisieren
+	    $cb = $attrs['callbackIntent'] ?? ($attrs['CallbackIntent'] ?? null);
+	    $this->callbackIntent = is_string($cb) && $cb !== '' ? $cb : null;
+	
+	    if ($this->callbackIntent !== null) {
+	        $this->Debug('Callback Intent', $this->callbackIntent);
+	    }
+	}
 	
 	protected function LoadAplUserEvent()
 	{
