@@ -161,6 +161,26 @@ abstract class Request extends BaseRequest
         // Create empty objects for the intent slots and session attributes
         $this->slots = new IntentSlots();
         $this->attributes = new SessionAttributes();
+
+        // Normalize/ensure basic session structure to avoid undefined-key warnings later
+        if (!isset($this->data) || !is_array($this->data)) {
+            $this->data = [];
+        }
+        if (!isset($this->data['session']) || !is_array($this->data['session'])) {
+            $this->data['session'] = [];
+        }
+        if (!isset($this->data['session']['attributes']) || !is_array($this->data['session']['attributes'])) {
+            $this->data['session']['attributes'] = [];
+        }
+        if (!isset($this->data['session']['attributes']['attributes']) || !is_array($this->data['session']['attributes']['attributes'])) {
+            $this->data['session']['attributes']['attributes'] = [];
+        }
+        if (!isset($this->data['session']['attributes']['slots']) || !is_array($this->data['session']['attributes']['slots'])) {
+            $this->data['session']['attributes']['slots'] = [];
+        }
+        if (!array_key_exists('callbackIntent', $this->data['session']['attributes'])) {
+            $this->data['session']['attributes']['callbackIntent'] = null;
+        }
     }
 	
 	/** @var array APL UserEvent arguments (from request.arguments) */
@@ -796,7 +816,6 @@ abstract class Request extends BaseRequest
      */
     protected function LoadCallbackIntent()
 	{
-	    // Attributes defensiv holen (kein @, keine Warnings)
 	    $attrs = [];
 	    if (is_array($this->data)) {
 	        $session = $this->data['session'] ?? null;
@@ -804,11 +823,9 @@ abstract class Request extends BaseRequest
 	            $attrs = $session['attributes'] ?? [];
 	        }
 	    }
-	
-	    // callbackIntent sicher lesen + normalisieren
 	    $cb = $attrs['callbackIntent'] ?? ($attrs['CallbackIntent'] ?? null);
 	    $this->callbackIntent = is_string($cb) && $cb !== '' ? $cb : null;
-	
+
 	    if ($this->callbackIntent !== null) {
 	        $this->Debug('Callback Intent', $this->callbackIntent);
 	    }
@@ -816,8 +833,8 @@ abstract class Request extends BaseRequest
 	
 	protected function LoadAplUserEvent()
 	{
-		if (@$this->data['request']['type'] === self::TYPE_APL_USER_EVENT) {
-			$args = @$this->data['request']['arguments'];
+		if (($this->data['request']['type'] ?? null) === self::TYPE_APL_USER_EVENT) {
+			$args = $this->data['request']['arguments'] ?? [];
 			if (!is_array($args)) { $args = []; }
 			$this->aplArguments = $args;
 			$this->Debug('APL.UserEvent Arguments', json_encode($args));
@@ -850,32 +867,27 @@ abstract class Request extends BaseRequest
 		$this->Debug('LOADED FILE', __FILE__);
 		$this->Validate();
 		$this->LoadSlots();
-		$this->LoadSessionAttributes();
+        $this->LoadSessionAttributes();
 		$this->LoadCallbackIntent();
 
 		// ============================================================
 		// EARLY: APL.UserEvent → in einen normalen IntentRequest wandeln
 		// ============================================================
-		// EARLY APL.UserEvent handler (in Request::Process)
-		// --- EARLY APL.UserEvent dispatch ---------------------------------
-		if (@$this->data['request']['type'] === self::TYPE_APL_USER_EVENT) {
+		if (($this->data['request']['type'] ?? null) === self::TYPE_APL_USER_EVENT) {
 			$this->Debug('DISPATCH', 'EARLY APL.UserEvent handler!');
 
-			// Arguments holen und loggen
 			$args = (isset($this->data['request']['arguments']) && is_array($this->data['request']['arguments']))
 				? $this->data['request']['arguments'] : [];
 			$this->Debug('APL_UserEvent Arguments', json_encode($args));
             $this->aplArguments = $args;
-			// Arguments dem Intent-Script verfügbar machen
+
 			if (isset($this->attributes) && method_exists($this->attributes, 'Set')) {
 				$this->attributes->Set('APL_ARGS', $args);
 			}
 
-			// Kandidat aus args[0], sonst fester Intent-Name
 			$intentCandidate = (isset($args[0]) && is_string($args[0]) && $args[0] !== '') ? $args[0] : null;
 
 			try {
-				// 1. Versuch: Kandidat aus dem Event
 				$intentName = $intentCandidate ?: 'GetHaus';
 				$this->Debug('APL_Dispatch target', $intentName);
 				$intent = \Patami\IPS\Services\Alexa\Skills\Custom\ModuleIntent::CreateByName($this->io, $intentName);
@@ -889,12 +901,10 @@ abstract class Request extends BaseRequest
 				return $response;
 
 			} catch (\Throwable $e) {
-				// Warum fehlgeschlagen (z.B. Intent nicht gefunden)?
 				$this->Debug('APL_ERROR', '@ '.$e->getFile().':'.$e->getLine());
 				$this->Debug('APL_TRACE', $e->getTraceAsString());
 
 				try {
-					// 2. Fallback: Fester Intent-Name
 					$this->Debug('APL_FALLBACK target', 'GetHaus');
 					$intent = \Patami\IPS\Services\Alexa\Skills\Custom\ModuleIntent::CreateByName($this->io, 'GetHaus');
 
@@ -907,7 +917,6 @@ abstract class Request extends BaseRequest
 					return $response;
 
 				} catch (\Throwable $e2) {
-					// 3. Letzter Fallback: Launch
 					return $this->ProcessLaunchRequest();
 				}
 			}
