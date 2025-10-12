@@ -50,18 +50,40 @@ class IntentSlots extends RequestData
      * @param array $sessionSlots Intent slots from the session data of the Alexa request.
      * @throws InvalidIntentSlotsException if the intent slot data is invalid.
      */
-    public function __construct(array $slots = array(), array $sessionSlots = array())
+    public function __construct(array $slots = [], array $sessionSlots = [])
     {
-        // Call the parent method to initialize data with session slots
+        // 1) Session-Slots in die Basisklasse laden
         parent::__construct($sessionSlots);
-
-        // Loop through the slots array and insert / overwrite data
-        foreach ($slots as $slotKey => $slot) {
-            $slotName = @$slot['name'];
-            if (! $slotName) {
-                throw new InvalidIntentSlotsException();
+    
+        // 2) Sicherstellen, dass data existiert
+        if (!is_array($this->data)) {
+            $this->data = [];
+        }
+    
+        // 3) Default für callbackIntent setzen (verhindert Undefined-Array-Key später)
+        if (!array_key_exists('callbackIntent', $this->data)) {
+            $this->data['callbackIntent'] = null;
+        }
+    
+        // 4) Eingehende Slots sauber mergen (ohne @, mit Fallbacks)
+        foreach ($slots as $slot) {
+            if (!is_array($slot)) {
+                // tolerante Weiterverarbeitung statt Exception
+                continue;
             }
-            $slotValue = @$slot['value'];
+    
+            $slotName  = $slot['name']  ?? null;
+            if ($slotName === null || $slotName === '') {
+                throw new InvalidIntentSlotsException('Missing slot name');
+            }
+    
+            $slotValue = $slot['value'] ?? null;
+    
+            // Optional: 'CallbackIntent' (andere Schreibweisen) normalisieren
+            if (strcasecmp($slotName, 'callbackIntent') === 0) {
+                $slotName = 'callbackIntent';
+            }
+    
             $this->data[$slotName] = $slotValue;
         }
     }
