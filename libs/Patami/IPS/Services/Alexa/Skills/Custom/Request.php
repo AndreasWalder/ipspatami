@@ -165,42 +165,42 @@ abstract class Request extends BaseRequest
 
         // Normalize/ensure basic session structure to avoid undefined-key warnings later
         if (!isset($this->data) || !is_array($this->data)) {
-            $this->data = [];
+            @$this->data = [];
         }
         if (!isset($this->data['session']) || !is_array($this->data['session'])) {
-            $this->data['session'] = [];
+            @$this->data['session'] = [];
         }
         if (!isset($this->data['session']['attributes']) || !is_array($this->data['session']['attributes'])) {
-            $this->data['session']['attributes'] = [];
+            @$this->data['session']['attributes'] = [];
         }
         if (!isset($this->data['session']['attributes']['attributes']) || !is_array($this->data['session']['attributes']['attributes'])) {
-            $this->data['session']['attributes']['attributes'] = [];
+            @$this->data['session']['attributes']['attributes'] = [];
         }
         if (!isset($this->data['session']['attributes']['slots']) || !is_array($this->data['session']['attributes']['slots'])) {
-            $this->data['session']['attributes']['slots'] = [];
+            @$this->data['session']['attributes']['slots'] = [];
         }
         if (!array_key_exists('callbackIntent', $this->data['session']['attributes'])) {
-            $this->data['session']['attributes']['callbackIntent'] = null;
+            @$this->data['session']['attributes']['callbackIntent'] = null;
         }
 
         // --- Request-Struktur defensiv normalisieren ---
         if (!isset($this->data['request']) || !is_array($this->data['request'])) {
-            $this->data['request'] = [];
+            @$this->data['request'] = [];
         }
         if (!isset($this->data['request']['intent']) || !is_array($this->data['request']['intent'])) {
-            $this->data['request']['intent'] = [];
+            @$this->data['request']['intent'] = [];
         }
         if (!isset($this->data['request']['intent']['slots']) || !is_array($this->data['request']['intent']['slots'])) {
-            $this->data['request']['intent']['slots'] = [];
+            @$this->data['request']['intent']['slots'] = [];
         }
         if (!array_key_exists('type', $this->data['request'])) {
-            $this->data['request']['type'] = null;
+            @$this->data['request']['type'] = null;
         }
         if (!array_key_exists('locale', $this->data['request'])) {
-            $this->data['request']['locale'] = null;
+            @$this->data['request']['locale'] = null;
         }
         if (!array_key_exists('name', $this->data['request']['intent'])) {
-            $this->data['request']['intent']['name'] = null;
+            @$this->data['request']['intent']['name'] = null;
         }
     }
 	
@@ -795,14 +795,14 @@ abstract class Request extends BaseRequest
     protected function LoadSlots()
 	{
 	    // Request/Intent defensiv lesen
-	    $req    = $this->data['request'] ?? null;
+	    $req    = @$this->data['request'] ?? null;
 	    $intent = is_array($req) ? ($req['intent'] ?? null) : null;
 	    $slots  = is_array($intent) ? ($intent['slots'] ?? []) : [];
 	
 	    $this->Debug('Slots from Request', json_encode($slots));
 	
 	    // Session-Slots defensiv lesen
-	    $session      = $this->data['session'] ?? null;
+	    $session      = @$this->data['session'] ?? null;
 	    $sessionAttrs = is_array($session) ? ($session['attributes'] ?? null) : null;
 	    $sessionSlots = is_array($sessionAttrs) ? ($sessionAttrs['slots'] ?? []) : [];
 	
@@ -839,7 +839,7 @@ abstract class Request extends BaseRequest
 	{
 	    $attrs = [];
 	    if (is_array($this->data)) {
-	        $session = $this->data['session'] ?? null;
+	        $session = @$this->data['session'] ?? null;
 	        if (is_array($session)) {
 	            $attrs = $session['attributes'] ?? [];
 	        }
@@ -855,7 +855,7 @@ abstract class Request extends BaseRequest
 	protected function LoadAplUserEvent()
 	{
 	    if (($this->data['request']['type'] ?? null) === self::TYPE_APL_USER_EVENT) {
-	        $args = $this->data['request']['arguments'] ?? [];
+	        $args = @$this->data['request']['arguments'] ?? [];
 	        if (!is_array($args)) { $args = []; }
 	        $this->aplArguments = $args;   // <-- hier war das fehlende $
 	        $this->Debug('APL.UserEvent Arguments', json_encode($args));
@@ -970,7 +970,7 @@ abstract class Request extends BaseRequest
 				break;
 
 			case self::TYPE_INTENT_REQUEST:
-			    $req    = $this->data['request'] ?? null;
+			    $req    = @$this->data['request'] ?? null;
 			    $intent = is_array($req) ? ($req['intent'] ?? null) : null;
 			    $name   = is_array($intent) ? ($intent['name'] ?? null) : null;
 			    $this->Debug('Intent Name Validation', $name);
