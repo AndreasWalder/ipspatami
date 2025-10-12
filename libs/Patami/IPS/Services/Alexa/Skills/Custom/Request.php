@@ -772,25 +772,20 @@ abstract class Request extends BaseRequest
      * @see Request::$intentSlots
      */
     protected function LoadSlots()
-    {
-        // Load Slots
-        $slots = @$this->data['request']['intent']['slots'];
-        if (! is_array($slots)) {
-            $slots = array();
-        }
-        $this->Debug('Slots from Request', json_encode($slots));
-
-        // Load Session Slots
-        $sessionSlots = @$this->data['session']['attributes']['slots'];
-        if (! is_array($sessionSlots)) {
-            $sessionSlots = array();
-        }
-        $this->Debug('Slots from Session', json_encode($sessionSlots));
-
-        // Create the slots object
-        $this->slots = new IntentSlots($slots, $sessionSlots);
-        $this->Debug('Merged Slots', $this->slots->GetAsJSON());
-    }
+	{
+	    $req    = $this->data['request'] ?? null;
+	    $intent = is_array($req) ? ($req['intent'] ?? null) : null;
+	    $slots  = is_array($intent) ? ($intent['slots'] ?? []) : [];
+	    $this->Debug('Slots from Request', json_encode($slots));
+	
+	    $session      = $this->data['session'] ?? null;
+	    $sessionAttrs = is_array($session) ? ($session['attributes'] ?? null) : null;
+	    $sessionSlots = is_array($sessionAttrs) ? ($sessionAttrs['slots'] ?? []) : [];
+	    $this->Debug('Slots from Session', json_encode($sessionSlots));
+	
+	    $this->slots = new IntentSlots($slots, $sessionSlots);
+	    $this->Debug('Merged Slots', $this->slots->GetAsJSON());
+	}
 
     /**
      * Loads the session data key value pairs from the request data and creates a new SessionAttributes object from the data.
@@ -949,10 +944,15 @@ abstract class Request extends BaseRequest
 				break;
 
 			case self::TYPE_INTENT_REQUEST:
-				$name = @$this->data['request']['intent']['name'];
-				$this->Debug('Intent Name Validation', $name);
-				$response = $this->ProcessIntentRequest($name);
-				break;
+			    $req    = $this->data['request'] ?? null;
+			    $intent = is_array($req) ? ($req['intent'] ?? null) : null;
+			    $name   = is_array($intent) ? ($intent['name'] ?? null) : null;
+			    $this->Debug('Intent Name Validation', $name);
+			    if ($name === null) {
+			        return $this->ProcessLaunchRequest();
+			    }
+			    $response = $this->ProcessIntentRequest($name);
+			    break;
 
 			case self::TYPE_SESSION_ENDED_REQUEST:
 				$response = $this->ProcessSessionEndedRequest();
