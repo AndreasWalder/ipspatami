@@ -1,0 +1,19 @@
+{
+  "patami.alexacustomskillintent.form.name.label": "Name of the intent:",
+  "patami.alexacustomskillintent.form.name.standard_name_label": "Standard name",
+  "patami.alexacustomskillintent.form.name.use_own_name_option": "Use own name",
+  "patami.alexacustomskillintent.form.name.custom_name_label": "Own name:",
+  "patami.alexacustomskillintent.form.name.notice": "Notice: When selecting \"Use own name\" apply the configuration to show the intent name field.",
+  "patami.alexacustomskillintent.form.action.label": "Execute this action when the intent is called:",
+  "patami.alexacustomskillintent.form.action.speech_output_option": "Speech output",
+  "patami.alexacustomskillintent.form.action.script_option": "Execute script",
+  "patami.alexacustomskillintent.form.action.redirect_option": "Redirect to another intent",
+  "patami.alexacustomskillintent.form.action.redirect_callback_option": "Redirect to the callback intent",
+  "patami.alexacustomskillintent.form.action.repeat_last_response_option": "Repeat the last response",
+  "patami.alexacustomskillintent.form.action.notice": "Notice: When changing the action apply the configuration to update the field configuration.",
+  "patami.alexacustomskillintent.form.actions.rename.label": "Click here to rename the instance to match the intent name:",
+  "patami.alexacustomskillintent.form.actions.rename.button": "Rename Instance",
+  "patami.alexacustomskillintent.form.status.webhook_invalid": "The web hook is invalid",
+  "patami.alexacustomskillintent.form.status.intent_name_invalid": "The intent name is invalid (may only contain case-insensitive alphabetical characters)",
+  "patami.alexacustomskillintent.form.status.duplicate_intent_name": "The intent name is already used by another instance"
+}

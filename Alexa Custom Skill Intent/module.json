@@ -1,0 +1,13 @@
+{
+  "id": "{F14921A2-405D-4576-A389-95FB9A5CD730}",
+  "name": "AlexaCustomSkillIntent",
+  "title": "Alexa Custom Skill Intent",
+  "description": "Alexa Custom Skill Intent instance",
+  "type": 3,
+  "vendor": "Patami",
+  "aliases": [ "Alexa Custom Skill Intent" ],
+  "parentRequirements": ["{A18A8F86-D8EC-4C46-9DDC-D9AD5D8C47A3}"],
+  "childRequirements": [],
+  "implemented": ["{D555F8C2-3A4C-463C-B81C-71AE1F6379AD}"],
+  "prefix": "ACSIntent"
+}

@@ -1,0 +1,19 @@
+{
+  "patami.alexacustomskillintent.form.name.label": "Name des Intents:",
+  "patami.alexacustomskillintent.form.name.standard_name_label": "Standard Name",
+  "patami.alexacustomskillintent.form.name.use_own_name_option": "Eigenen Namen verwenden",
+  "patami.alexacustomskillintent.form.name.custom_name_label": "Eigener Name:",
+  "patami.alexacustomskillintent.form.name.notice": "Hinweis: Bei Auswahl von \"Eigenen Namen verwenden\" die Konfiguration übernehmen, um das Eingabefeld für den Intent Namen anzuzeigen.",
+  "patami.alexacustomskillintent.form.action.label": "Diese Aktion ausführen wenn der Intent aufgerufen wird:",
+  "patami.alexacustomskillintent.form.action.speech_output_option": "Sprachausgabe",
+  "patami.alexacustomskillintent.form.action.script_option": "Skript ausführen",
+  "patami.alexacustomskillintent.form.action.redirect_option": "Umleiten an einen anderen Intent",
+  "patami.alexacustomskillintent.form.action.redirect_callback_option": "Umleiten an den Callback Intent",
+  "patami.alexacustomskillintent.form.action.repeat_last_response_option": "Die letzte Antwort wiederholen",
+  "patami.alexacustomskillintent.form.action.notice": "Hinweis: Bei Änderung der Aktion die Konfiguration übernehmen, um die Feldkonfiguration zu aktualisieren.",
+  "patami.alexacustomskillintent.form.actions.rename.label": "Hier klicken, um den Namen der Instanz an den Namen des Intents anzugleichen:",
+  "patami.alexacustomskillintent.form.actions.rename.button": "Instanz umbenennen",
+  "patami.alexacustomskillintent.form.status.webhook_invalid": "Der WebHook ist ungültig",
+  "patami.alexacustomskillintent.form.status.intent_name_invalid": "Der Name des Intents ist ungültig (darf nur Klein- und Großbuchstaben enthalten)",
+  "patami.alexacustomskillintent.form.status.duplicate_intent_name": "Der Name des Intents wird bereits von einer anderen Instanz verwendet"
+}

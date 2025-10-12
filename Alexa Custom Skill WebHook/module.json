@@ -1,0 +1,13 @@
+{
+  "id": "{F416D335-7D66-4B91-97AA-02C7F4E3D343}",
+  "name": "AlexaCustomSkill",
+  "title": "Alexa Custom Skill",
+  "description": "WebHook I/O instance for an Alexa Custom Skill",
+  "type": 1,
+  "vendor": "Patami",
+  "aliases": [ "Alexa Custom Skill" ],
+  "parentRequirements": [],
+  "childRequirements": ["{D555F8C2-3A4C-463C-B81C-71AE1F6379AD}"],
+  "implemented": ["{A18A8F86-D8EC-4C46-9DDC-D9AD5D8C47A3}"],
+  "prefix": "ACSWebHook"
+}

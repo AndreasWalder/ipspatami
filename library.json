@@ -1,0 +1,13 @@
+{
+  "id": "{94D313BD-8920-433F-9EC9-58AEC0984742}",
+  "author": "Andreas Walder",
+  "name": "Patami Framework",
+  "url": "https://bitbucket.org/patami/ipspatami",
+  "compatibility": {
+    "version": "4.2",
+    "date": 1492639200
+  },
+  "version": "3.4",
+  "build": 0,
+  "date": 0
+}

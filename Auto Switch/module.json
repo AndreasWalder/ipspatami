@@ -1,0 +1,13 @@
+{
+  "id": "{C6822771-D04A-4903-BD75-DA1939084C91}",
+  "name": "PatamiAutoSwitch",
+  "title": "Patami Auto Switch",
+  "description": "Patami Auto Switch instance",
+  "type": 3,
+  "vendor": "Patami",
+  "aliases": [ "Patami Auto Switch", "Patami Auto Schalter" ],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "PAS"
+}

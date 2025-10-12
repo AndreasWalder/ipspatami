@@ -1,0 +1,13 @@
+{
+  "id": "{42A59F8E-2797-4589-B55D-C81D93B7BB79}",
+  "name": "PatamiSplitRGB",
+  "title": "Patami Split RGB",
+  "description": "Patami Split RGB instance",
+  "type": 3,
+  "vendor": "Patami",
+  "aliases": [ "Patami Split RGB" ],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "PSRGB"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "{48116B13-0CC1-4856-B122-72058B2BDA18}",
+  "name": "PatamiSceneSwitcher",
+  "title": "Patami Scene Switcher",
+  "description": "Patami Scene Switcher instance",
+  "type": 3,
+  "vendor": "Patami",
+  "aliases": [ "Patami Scene Switcher", "Patami Szenen Schalter" ],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "PSS"
+}

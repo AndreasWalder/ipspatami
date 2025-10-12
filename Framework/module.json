@@ -1,0 +1,13 @@
+{
+  "id": "{F82A758B-3F08-4E06-BBF9-A4055033611D}",
+  "name": "PatamiFramework",
+  "title": "Patami Framework",
+  "description": "Patami Framework instance",
+  "type": 0,
+  "vendor": "Patami",
+  "aliases": [ "Patami Framework" ],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "Patami"
+}

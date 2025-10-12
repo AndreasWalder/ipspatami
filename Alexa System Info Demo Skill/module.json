@@ -1,0 +1,13 @@
+{
+  "id": "{48B845BA-09EC-479F-97A8-1469CE84D991}",
+  "name": "AlexaSystemInfoDemoSkill",
+  "title": "Alexa System Info Demo Skill",
+  "description": "Alexa System Info Demo Skill Instance",
+  "type": 1,
+  "vendor": "Patami",
+  "aliases": [ "Alexa System Info Demo Skill" ],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "AlexaSystemInfoDemo"
+}

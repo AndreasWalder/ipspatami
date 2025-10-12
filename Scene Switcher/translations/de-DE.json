@@ -1,0 +1,14 @@
+{
+  "patami.patamisceneswitcher.form.pog_instance.label": "Patami Object Group Instanz (Modus Szene):",
+  "patami.patamisceneswitcher.form.trigger_variable.label": "Szenenwechsel mit einer dieser Variablen auslösen (nächste Szene bei WAHR, vorherige Szene bei FALSCH):",
+  "patami.patamisceneswitcher.form.trigger_variable.variable_label": "Variable %d",
+  "patami.patamisceneswitcher.form.trigger_variable.apply_first_scene_on_false_label": "Bei FALSCH die erste Szene anwenden",
+  "patami.patamisceneswitcher.form.scenes.label": "Beim Szenenwechsel diese Szenen anwenden (leere Einträge werden ignoriert):",
+  "patami.patamisceneswitcher.form.scenes.scene_label": "Szene %d",
+  "patami.patamisceneswitcher.form.actions.scene.label": "Hier klicken um die Szene zu wechseln:",
+  "patami.patamisceneswitcher.form.actions.scene.next_button": "Nächste Szene",
+  "patami.patamisceneswitcher.form.actions.scene.previous_button": "Vorherige Szene",
+  "patami.patamisceneswitcher.form.actions.scene.first_button": "Erste Szene",
+  "patami.patamisceneswitcher.form.status.pog_instance_invalid": "Die Patami Object Group Instanz ist ungültig oder ist im falschen Modus",
+  "patami.patamisceneswitcher.form.status.trigger_variable_invalid": "Die Auslösevariable muss eine Boolean Variable sein"
+}

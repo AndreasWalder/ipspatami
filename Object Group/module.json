@@ -1,0 +1,13 @@
+{
+  "id": "{ED1BD621-3BA5-48C1-A016-33E6AECA12F2}",
+  "name": "PatamiObjectGroup",
+  "title": "Patami Object Group",
+  "description": "Patami Object Group instance",
+  "type": 3,
+  "vendor": "Patami",
+  "aliases": [ "Patami Object Group", "Patami Objekt Gruppe" ],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "POG"
+}
