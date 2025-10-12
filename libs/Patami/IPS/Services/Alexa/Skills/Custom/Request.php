@@ -73,24 +73,24 @@ abstract class Request extends BaseRequest
      * @link https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/custom-standard-request-types-reference#intentrequest
      */
     const TYPE_INTENT_REQUEST = 'IntentRequest';
-	
-		/**
-	 * APL UserEvent
-	 */
-	public const TYPE_APL_USER_EVENT = 'Alexa.Presentation.APL.UserEvent';
+    
+        /**
+         * APL UserEvent
+         */
+        public const TYPE_APL_USER_EVENT = 'Alexa.Presentation.APL.UserEvent';
 
-	/**
-	 * System.ExceptionEncountered (Fehler-Callback von Alexa)
-	 * -> nur protokollieren und neutral antworten
-	 */
-	public const TYPE_SYSTEM_EXCEPTION_ENCOUNTERED = 'System.ExceptionEncountered';
+    /**
+     * System.ExceptionEncountered (Fehler-Callback von Alexa)
+     * -> nur protokollieren und neutral antworten
+     */
+    public const TYPE_SYSTEM_EXCEPTION_ENCOUNTERED = 'System.ExceptionEncountered';
 
     /**
      * SessionEndedRequest
      * @link https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/custom-standard-request-types-reference#sessionendedrequest
      */
     const TYPE_SESSION_ENDED_REQUEST = 'SessionEndedRequest';
-	
+    
 
     /** @var IOInterface I/O module object processing the request. */
     protected $io;
@@ -203,14 +203,14 @@ abstract class Request extends BaseRequest
             @$this->data['request']['intent']['name'] = null;
         }
     }
-	
-	/** @var array APL UserEvent arguments (from request.arguments) */
-	protected $aplArguments = [];
+    
+    /** @var array APL UserEvent arguments (from request.arguments) */
+    protected $aplArguments = [];
 
-	public function GetAplArguments()
-	{
-		return is_array($this->aplArguments) ? $this->aplArguments : [];
-	}
+    public function GetAplArguments()
+    {
+        return is_array($this->aplArguments) ? $this->aplArguments : [];
+    }
 
 
     /**
@@ -248,8 +248,8 @@ abstract class Request extends BaseRequest
     {
         return $this->consentToken;
     }
-	
-	
+    
+    
 
     /**
      * Returns the country and postal code of the Alexa device if permitted.
@@ -766,23 +766,23 @@ abstract class Request extends BaseRequest
      * @throws RequestTypeNotSupportedException if the request type is not supported.
      */
     protected function ValidateRequestType()
-	{
-		$validRequestTypes = array(
-			self::TYPE_LAUNCH_REQUEST,
-			self::TYPE_INTENT_REQUEST,
-			self::TYPE_SESSION_ENDED_REQUEST,
-			self::TYPE_APL_USER_EVENT,
-			self::TYPE_SYSTEM_EXCEPTION_ENCOUNTERED
-		);
+    {
+        $validRequestTypes = array(
+            self::TYPE_LAUNCH_REQUEST,
+            self::TYPE_INTENT_REQUEST,
+            self::TYPE_SESSION_ENDED_REQUEST,
+            self::TYPE_APL_USER_EVENT,
+            self::TYPE_SYSTEM_EXCEPTION_ENCOUNTERED
+        );
 
-		$requestType = @$this->data['request']['type'];
-		$this->Debug('Request Type Validation', $requestType);
+        $requestType = @$this->data['request']['type'];
+        $this->Debug('Request Type Validation', $requestType);
 
-		if (!in_array($requestType, $validRequestTypes)) {
-			throw new RequestTypeNotSupportedException();
-		}
-		$this->requestType = $requestType;
-	}
+        if (!in_array($requestType, $validRequestTypes)) {
+            throw new RequestTypeNotSupportedException();
+        }
+        $this->requestType = $requestType;
+    }
 
 
 
@@ -793,25 +793,30 @@ abstract class Request extends BaseRequest
      * @see Request::$intentSlots
      */
     protected function LoadSlots()
-	{
-	    // Request/Intent defensiv lesen
-	    $req    = @$this->data['request'] ?? null;
-	    $intent = is_array($req) ? ($req['intent'] ?? null) : null;
-	    $slots  = is_array($intent) ? ($intent['slots'] ?? []) : [];
-	
-	    $this->Debug('Slots from Request', json_encode($slots));
-	
-	    // Session-Slots defensiv lesen
-	    $session      = @$this->data['session'] ?? null;
-	    $sessionAttrs = is_array($session) ? ($session['attributes'] ?? null) : null;
-	    $sessionSlots = is_array($sessionAttrs) ? ($sessionAttrs['slots'] ?? []) : [];
-	
-	    $this->Debug('Slots from Session', json_encode($sessionSlots));
-	
-	    // Zusammenführen
-	    $this->slots = new IntentSlots($slots, $sessionSlots);
-	    $this->Debug('Merged Slots', $this->slots->GetAsJSON());
-	}
+    {
+        $__prevEr = error_reporting(error_reporting() & ~E_WARNING);
+        try {
+            // Request/Intent defensiv lesen
+            $req    = @$this->data['request'] ?? null;
+            $intent = is_array($req) ? ($req['intent'] ?? null) : null;
+            $slots  = is_array($intent) ? ($intent['slots'] ?? []) : [];
+    
+            $this->Debug('Slots from Request', json_encode($slots));
+    
+            // Session-Slots defensiv lesen
+            $session      = @$this->data['session'] ?? null;
+            $sessionAttrs = is_array($session) ? ($session['attributes'] ?? null) : null;
+            $sessionSlots = is_array($sessionAttrs) ? ($sessionAttrs['slots'] ?? []) : [];
+    
+            $this->Debug('Slots from Session', json_encode($sessionSlots));
+    
+            // Zusammenführen
+            $this->slots = new IntentSlots($slots, $sessionSlots);
+            $this->Debug('Merged Slots', $this->slots->GetAsJSON());
+        } finally {
+            error_reporting($__prevEr);
+        }
+    }
 
     /**
      * Loads the session data key value pairs from the request data and creates a new SessionAttributes object from the data.
@@ -836,33 +841,33 @@ abstract class Request extends BaseRequest
      * @see Request::$callbackIntentName
      */
     protected function LoadCallbackIntent()
-	{
-	    $attrs = [];
-	    if (is_array($this->data)) {
-	        $session = @$this->data['session'] ?? null;
-	        if (is_array($session)) {
-	            $attrs = $session['attributes'] ?? [];
-	        }
-	    }
-	    $cb = $attrs['callbackIntent'] ?? ($attrs['CallbackIntent'] ?? null);
-	    $this->callbackIntent = is_string($cb) && $cb !== '' ? $cb : null;
+    {
+        $attrs = [];
+        if (is_array($this->data)) {
+            $session = @$this->data['session'] ?? null;
+            if (is_array($session)) {
+                $attrs = $session['attributes'] ?? [];
+            }
+        }
+        $cb = $attrs['callbackIntent'] ?? ($attrs['CallbackIntent'] ?? null);
+        $this->callbackIntent = is_string($cb) && $cb !== '' ? $cb : null;
 
-	    if ($this->callbackIntent !== null) {
-	        $this->Debug('Callback Intent', $this->callbackIntent);
-	    }
-	}
-	
-	protected function LoadAplUserEvent()
-	{
-	    if (($this->data['request']['type'] ?? null) === self::TYPE_APL_USER_EVENT) {
-	        $args = @$this->data['request']['arguments'] ?? [];
-	        if (!is_array($args)) { $args = []; }
-	        $this->aplArguments = $args;   // <-- hier war das fehlende $
-	        $this->Debug('APL.UserEvent Arguments', json_encode($args));
-	    } else {
-	        $this->aplArguments = [];
-	    }
-	}
+        if ($this->callbackIntent !== null) {
+            $this->Debug('Callback Intent', $this->callbackIntent);
+        }
+    }
+    
+    protected function LoadAplUserEvent()
+    {
+        if (($this->data['request']['type'] ?? null) === self::TYPE_APL_USER_EVENT) {
+            $args = @$this->data['request']['arguments'] ?? [];
+            if (!is_array($args)) { $args = []; }
+            $this->aplArguments = $args;
+            $this->Debug('APL.UserEvent Arguments', json_encode($args));
+        } else {
+            $this->aplArguments = [];
+        }
+    }
 
 
     /**
@@ -883,112 +888,117 @@ abstract class Request extends BaseRequest
      * @see Request::ProcessSessionEndedRequest()
      */
      public function Process()
-	{
-		// --- Validieren & Grunddaten laden ---
-		$this->Debug('LOADED FILE', __FILE__);
-		$this->Validate();
-		$this->LoadSlots();
-        $this->LoadSessionAttributes();
-		$this->LoadCallbackIntent();
+    {
+        $__prevEr = error_reporting(error_reporting() & ~E_WARNING);
+        try {
+            // --- Validieren & Grunddaten laden ---
+            $this->Debug('LOADED FILE', __FILE__);
+            $this->Validate();
+            $this->LoadSlots();
+            $this->LoadSessionAttributes();
+            $this->LoadCallbackIntent();
 
-		// ============================================================
-		// EARLY: APL.UserEvent → in einen normalen IntentRequest wandeln
-		// ============================================================
-		if (($this->data['request']['type'] ?? null) === self::TYPE_APL_USER_EVENT) {
-			$this->Debug('DISPATCH', 'EARLY APL.UserEvent handler!');
+            // ============================================================
+            // EARLY: APL.UserEvent → in einen normalen IntentRequest wandeln
+            // ============================================================
+            if (($this->data['request']['type'] ?? null) === self::TYPE_APL_USER_EVENT) {
+                $this->Debug('DISPATCH', 'EARLY APL.UserEvent handler!');
 
-			$args = (isset($this->data['request']['arguments']) && is_array($this->data['request']['arguments']))
-				? $this->data['request']['arguments'] : [];
-			$this->Debug('APL_UserEvent Arguments', json_encode($args));
-            $this->aplArguments = $args;
+                $args = (isset($this->data['request']['arguments']) && is_array($this->data['request']['arguments']))
+                    ? $this->data['request']['arguments'] : [];
+                $this->Debug('APL_UserEvent Arguments', json_encode($args));
+                $this->aplArguments = $args;
 
-			if (isset($this->attributes) && method_exists($this->attributes, 'Set')) {
-				$this->attributes->Set('APL_ARGS', $args);
-			}
+                if (isset($this->attributes) && method_exists($this->attributes, 'Set')) {
+                    $this->attributes->Set('APL_ARGS', $args);
+                }
 
-			$intentCandidate = (isset($args[0]) && is_string($args[0]) && $args[0] !== '') ? $args[0] : null;
+                $intentCandidate = (isset($args[0]) && is_string($args[0]) && $args[0] !== '') ? $args[0] : null;
 
-			try {
-				$intentName = $intentCandidate ?: 'GetHaus';
-				$this->Debug('APL_Dispatch target', $intentName);
-				$intent = \Patami\IPS\Services\Alexa\Skills\Custom\ModuleIntent::CreateByName($this->io, $intentName);
+                try {
+                    $intentName = $intentCandidate ?: 'GetHaus';
+                    $this->Debug('APL_Dispatch target', $intentName);
+                    $intent = \Patami\IPS\Services\Alexa\Skills\Custom\ModuleIntent::CreateByName($this->io, $intentName);
 
-				$this->intentStack[] = $intent->GetName();
-				$response = $intent->Execute($this);
+                    $this->intentStack[] = $intent->GetName();
+                    $response = $intent->Execute($this);
 
-				if (method_exists($response, 'SetShouldEndSession')) {
-					$response->SetShouldEndSession(false);
-				}
-				return $response;
+                    if (method_exists($response, 'SetShouldEndSession')) {
+                        $response->SetShouldEndSession(false);
+                    }
+                    return $response;
 
-			} catch (\Throwable $e) {
-				$this->Debug('APL_ERROR', '@ '.$e->getFile().':'.$e->getLine());
-				$this->Debug('APL_TRACE', $e->getTraceAsString());
+                } catch (\Throwable $e) {
+                    $this->Debug('APL_ERROR', '@ '.$e->getFile().':'.$e->getLine());
+                    $this->Debug('APL_TRACE', $e->getTraceAsString());
 
-				try {
-					$this->Debug('APL_FALLBACK target', 'GetHaus');
-					$intent = \Patami\IPS\Services\Alexa\Skills\Custom\ModuleIntent::CreateByName($this->io, 'GetHaus');
+                    try {
+                        $this->Debug('APL_FALLBACK target', 'GetHaus');
+                        $intent = \Patami\IPS\Services\Alexa\Skills\Custom\ModuleIntent::CreateByName($this->io, 'GetHaus');
 
-					$this->intentStack[] = $intent->GetName();
-					$response = $intent->Execute($this);
+                        $this->intentStack[] = $intent->GetName();
+                        $response = $intent->Execute($this);
 
-					if (method_exists($response, 'SetShouldEndSession')) {
-						$response->SetShouldEndSession(false);
-					}
-					return $response;
+                        if (method_exists($response, 'SetShouldEndSession')) {
+                            $response->SetShouldEndSession(false);
+                        }
+                        return $response;
 
-				} catch (\Throwable $e2) {
-					return $this->ProcessLaunchRequest();
-				}
-			}
-		}
-		// --- /EARLY --------------------------------------------------------
+                    } catch (\Throwable $e2) {
+                        return $this->ProcessLaunchRequest();
+                    }
+                }
+            }
+            // --- /EARLY --------------------------------------------------------
 
 
 
-		// ==================================================================
-		// Sonderfall: Alexa meldet einen Fehler-Callback (kein User-Problem)
-		// ==================================================================
-		if ($this->requestType === self::TYPE_SYSTEM_EXCEPTION_ENCOUNTERED) {
-			$this->Debug('SYSTEM.ExceptionEncountered:error', json_encode(@$this->data['request']['error']));
-			$this->Debug('SYSTEM.ExceptionEncountered:cause', json_encode(@$this->data['request']['cause']));
+            // ==================================================================
+            // Sonderfall: Alexa meldet einen Fehler-Callback (kein User-Problem)
+            // ==================================================================
+            if ($this->requestType === self::TYPE_SYSTEM_EXCEPTION_ENCOUNTERED) {
+                $this->Debug('SYSTEM.ExceptionEncountered:error', json_encode(@$this->data['request']['error']));
+                $this->Debug('SYSTEM.ExceptionEncountered:cause', json_encode(@$this->data['request']['cause']));
 
-			$resp = Response::Create();
-			$resp->AddPlainText('OK');
-			if (method_exists($resp, 'SetShouldEndSession')) {
-				$resp->SetShouldEndSession(false);
-			}
-			return $resp;
-		}
+                $resp = Response::Create();
+                $resp->AddPlainText('OK');
+                if (method_exists($resp, 'SetShouldEndSession')) {
+                    $resp->SetShouldEndSession(false);
+                }
+                return $resp;
+            }
 
-		// ----------------- ab hier normaler Flow -----------------
-		$this->isProcessing = true;
+            // ----------------- ab hier normaler Flow -----------------
+            $this->isProcessing = true;
 
-		switch ($this->requestType) {
-			case self::TYPE_LAUNCH_REQUEST:
-				$response = $this->ProcessLaunchRequest();
-				break;
+            switch ($this->requestType) {
+                case self::TYPE_LAUNCH_REQUEST:
+                    $response = $this->ProcessLaunchRequest();
+                    break;
 
-			case self::TYPE_INTENT_REQUEST:
-			    $req    = @$this->data['request'] ?? null;
-			    $intent = is_array($req) ? ($req['intent'] ?? null) : null;
-			    $name   = is_array($intent) ? ($intent['name'] ?? null) : null;
-			    $this->Debug('Intent Name Validation', $name);
-			    if ($name === null) {
-			        return $this->ProcessLaunchRequest();
-			    }
-			    $response = $this->ProcessIntentRequest($name);
-			    break;
+                case self::TYPE_INTENT_REQUEST:
+                    $req    = @$this->data['request'] ?? null;
+                    $intent = is_array($req) ? ($req['intent'] ?? null) : null;
+                    $name   = is_array($intent) ? ($intent['name'] ?? null) : null;
+                    $this->Debug('Intent Name Validation', $name);
+                    if ($name === null) {
+                        return $this->ProcessLaunchRequest();
+                    }
+                    $response = $this->ProcessIntentRequest($name);
+                    break;
 
-			case self::TYPE_SESSION_ENDED_REQUEST:
-				$response = $this->ProcessSessionEndedRequest();
-				break;
-		}
+                case self::TYPE_SESSION_ENDED_REQUEST:
+                    $response = $this->ProcessSessionEndedRequest();
+                    break;
+            }
 
-		$this->isProcessing = false;
-		/** @noinspection PhpUndefinedVariableInspection */
-		return $response;
-	}
+            $this->isProcessing = false;
+            /** @noinspection PhpUndefinedVariableInspection */
+            return $response;
+        } finally {
+            error_reporting($__prevEr);
+        }
+    }
 
 
 
@@ -1041,7 +1051,7 @@ abstract class Request extends BaseRequest
         // Execute the intent
         return $intent->Execute($this);
     }
-	
+    
     /**
      * Redirects to another intent.
      * This method is supposed to be called from within an intent's DoExecute() method or the aciton script of an IPS
