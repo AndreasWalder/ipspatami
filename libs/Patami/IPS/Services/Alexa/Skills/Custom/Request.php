@@ -773,16 +773,21 @@ abstract class Request extends BaseRequest
      */
     protected function LoadSlots()
 	{
+	    // Request/Intent defensiv lesen
 	    $req    = $this->data['request'] ?? null;
 	    $intent = is_array($req) ? ($req['intent'] ?? null) : null;
 	    $slots  = is_array($intent) ? ($intent['slots'] ?? []) : [];
+	
 	    $this->Debug('Slots from Request', json_encode($slots));
 	
+	    // Session-Slots defensiv lesen
 	    $session      = $this->data['session'] ?? null;
 	    $sessionAttrs = is_array($session) ? ($session['attributes'] ?? null) : null;
 	    $sessionSlots = is_array($sessionAttrs) ? ($sessionAttrs['slots'] ?? []) : [];
+	
 	    $this->Debug('Slots from Session', json_encode($sessionSlots));
 	
+	    // Zusammenführen
 	    $this->slots = new IntentSlots($slots, $sessionSlots);
 	    $this->Debug('Merged Slots', $this->slots->GetAsJSON());
 	}
