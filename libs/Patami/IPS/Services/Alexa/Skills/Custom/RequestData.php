@@ -10,22 +10,9 @@
  * @copyright 2017 Florian Wiethoff
  *
  * @license GPL
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * By intentionally submitting any modifications, corrections or derivatives to this work, or any other work intended
- * for use with this Software, to the author, you confirm that you are the copyright holder for those contributions and
- * you grant the author a nonexclusive, worldwide, irrevocable, royalty-free, perpetual, license to use, copy, create
- * derivative works based on those contributions, and sublicense and distribute those contributions and any derivatives
- * thereof.
  */
 
-
 namespace Patami\IPS\Services\Alexa\Skills\Custom;
-
 
 /**
  * Abstract base class to handle intent slots and session key-value pairs in Alexa Custom Skill requests and responses.
@@ -37,7 +24,6 @@ namespace Patami\IPS\Services\Alexa\Skills\Custom;
  */
 abstract class RequestData implements \ArrayAccess, \Iterator
 {
-
     /** @var array Key-value pairs with the request data. */
     protected $data = array();
 
@@ -95,6 +81,7 @@ abstract class RequestData implements \ArrayAccess, \Iterator
      * @param int|null $offset Array index or null to add a new element to the end of the array.
      * @param string $value New value.
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -110,6 +97,7 @@ abstract class RequestData implements \ArrayAccess, \Iterator
      * @param int $offset Array index.
      * @return bool True if the key-value pair at the specified index exists.
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->data[$offset]);
@@ -121,6 +109,7 @@ abstract class RequestData implements \ArrayAccess, \Iterator
      * The array indices will be renumbered after removing the key-value pair.
      * @param int $offset Array index.
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         if ($this->offsetExists($offset)) {
@@ -134,9 +123,10 @@ abstract class RequestData implements \ArrayAccess, \Iterator
      * @param int $offset Array index.
      * @return string|null Value at the specified index or null if there is no such index.
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
-        return $this->offsetExists($offset)? $this->data[$offset]: null;
+        return $this->offsetExists($offset) ? $this->data[$offset] : null;
     }
 
     /**
@@ -144,6 +134,7 @@ abstract class RequestData implements \ArrayAccess, \Iterator
      * This method is used for the Iterator interface.
      * @return string|false Value of the first array element or false if the array is empty.
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         return reset($this->data);
@@ -154,6 +145,7 @@ abstract class RequestData implements \ArrayAccess, \Iterator
      * This method is used for the Iterator interface.
      * @return string|false Value of the current key-value pair or false if the array is empty.
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return current($this->data);
@@ -164,6 +156,7 @@ abstract class RequestData implements \ArrayAccess, \Iterator
      * This method is used for the Iterator interface.
      * @return string|false Key of the current key-value pair or false if the array is empty.
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return key($this->data);
@@ -174,6 +167,7 @@ abstract class RequestData implements \ArrayAccess, \Iterator
      * This method is used for the Iterator interface.
      * @return string|false Value of the next key-value pair or false if the array is empty or if there are no more elements.
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         return next($this->data);
@@ -183,9 +177,10 @@ abstract class RequestData implements \ArrayAccess, \Iterator
      * Checks if the current key-value pair is valid (ie. the key is not null).
      * @return bool True if the current key-value pair is valid.
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
-        return ! is_null(key($this->data));
+        return !is_null(key($this->data));
     }
 
     /**
@@ -205,5 +200,4 @@ abstract class RequestData implements \ArrayAccess, \Iterator
     {
         return json_encode($this->data);
     }
-
 }
