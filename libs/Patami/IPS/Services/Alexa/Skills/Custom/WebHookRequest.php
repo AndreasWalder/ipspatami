@@ -145,52 +145,5 @@ class WebHookRequest extends Request
         // Execute the intent
         return $intent->Execute($this);
     }
-	
-	// --- APL UserEvent Helpers ---
-	public function IsAPLUserEvent(): bool {
-		return isset($this->request->type)
-			&& $this->request->type === 'Alexa.Presentation.APL.UserEvent';
-	}
-
-	public function GetUserEventArguments(): array {
-		return isset($this->request->arguments) && is_array($this->request->arguments)
-			? $this->request->arguments
-			: [];
-	}
-
-	public function GetUserEventToken(): string {
-		return isset($this->request->token) ? (string)$this->request->token : '';
-	}
-	
-	protected function ProcessAPLUserEvent()
-	{
-		// Rohrequest holen (gleiches Objekt, über das du auch Slots etc. liest)
-		$req = $this->request ?? null; // je nach Klasse evtl. $this->Request oder $this->GetRequest()
-
-		// Standard-Pfade von Alexa UserEvent:
-		// request.type === 'Alexa.Presentation.APL.UserEvent'
-		// request.arguments === [...]  (deine SendEvent arguments)
-		// request.source / request.components falls benötigt
-		$args = [];
-		if (isset($req->request->arguments) && is_array($req->request->arguments)) {
-			$args = $req->request->arguments;
-		}
-
-		// Beispiel: aus deinem APL: ["tileTap","licht","Licht"]
-		$event = $args[0] ?? '';
-		$id    = $args[1] ?? '';
-		$title = $args[2] ?? '';
-
-		// → hier verzweigst du in deine bestehende PHP-Logik:
-		// z.B. Kachel "licht" öffnen / eine Intent-Logik anstoßen / APL updaten
-		if ($event === 'tileTap' && $id !== '') {
-			// Antwort offen halten, damit APL interaktiv bleibt:
-			return AskResponse::CreatePlainText("„{$title}“ gewählt.")
-				->SetRepromptPlainText('Was soll ich tun?');
-		}
-
-		return AskResponse::CreatePlainText('OK.')->SetRepromptPlainText('Weiter?');
-	}
-
 
 }
