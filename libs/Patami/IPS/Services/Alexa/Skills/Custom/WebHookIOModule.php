@@ -206,14 +206,19 @@ abstract class WebHookIOModule extends BaseWebHookIOModule implements IOInterfac
         $this->Debug('Application ID Validation', 'ID is valid');
 
         // Validate User ID
-        $id = $this->GetAllowedUserId();
-        if (! preg_match('/^amzn1\.ask\.account\.[0-9A-Z]{207}$/', $id)) {
-            $this->Debug('User ID Validation', 'ID is invalid');
-            /** @noinspection PhpUndefinedMethodInspection */
-            $this->SetStatus(self::STATUS_ERROR_USER_ID_INVALID);
-            return;
+        $id = (string)$this->GetAllowedUserId();
+        if ($id !== '') {
+            if (!preg_match('/^amzn1\.ask\.account\.[0-9A-Z]+$/', $id)) {
+                $this->Debug('User ID Validation', 'ID is invalid');
+                /** @noinspection PhpUndefinedMethodInspection */
+                $this->SetStatus(self::STATUS_ERROR_USER_ID_INVALID);
+                return;
+            }
+            $this->Debug('User ID Validation', 'ID is valid');
+        } else {
+            // empty = allow all users (no whitelist)
+            $this->Debug('User ID Validation', 'ID is empty (allow all users)');
         }
-        $this->Debug('User ID Validation', 'ID is valid');
 
         // Validate Launch Request Intent ID
         $id = $this->GetLaunchIntentId();
