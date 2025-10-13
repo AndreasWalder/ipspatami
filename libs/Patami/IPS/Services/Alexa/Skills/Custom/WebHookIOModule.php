@@ -23,13 +23,16 @@
  * thereof.
  */
 
+
 namespace Patami\IPS\Services\Alexa\Skills\Custom;
+
 
 use Patami\IPS\I18N\Translator;
 use Patami\IPS\IO\WebHookIOModule as BaseWebHookIOModule;
 use Patami\IPS\Services\Alexa\Skills\Custom\Exceptions\InvalidIntentConfigurationPropertyException;
 use Patami\IPS\Services\Alexa\Skills\LocaleInterface;
 use Patami\IPS\System\IPS;
+
 
 /**
  * Abstract base class used to implement IPS WebHook modules that communicate with Amazon servers for uncertified Alexa Custom Skills.
@@ -42,6 +45,7 @@ use Patami\IPS\System\IPS;
  */
 abstract class WebHookIOModule extends BaseWebHookIOModule implements IOInterface, IntentContainerInterface, LocaleInterface
 {
+
     // Include the common code for Custom skills
     use IOModuleTrait;
 
@@ -54,7 +58,7 @@ abstract class WebHookIOModule extends BaseWebHookIOModule implements IOInterfac
     /** IPS status code used to indicate that the configured LaunchIntent intent instance is incorrect (wrong module GUID). */
     const STATUS_ERROR_LAUNCH_REQUEST_INTENT_INVALID = 303;
 
-    /** IPS status code used to indicate that the configured LaunchRequest intent instance is bound to another WebHook instance. */
+    /** IPS status code used to indicate that the configured LaunchIntent intent instance is bound to another WebHook instance. */
     const STATUS_ERROR_LAUNCH_REQUEST_INTENT_WRONG_CONNECTION = 304;
 
     /**
@@ -191,9 +195,9 @@ abstract class WebHookIOModule extends BaseWebHookIOModule implements IOInterfac
      */
     protected function Configure()
     {
-        // Validate Application ID (strict)
+        // Validate Application ID
         $id = $this->GetAllowedApplicationId();
-        if (!preg_match('/^amzn1\.ask\.skill\.[0-9a-f]{8}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{12}$/', $id)) {
+        if (! preg_match('/^amzn1\.ask\.skill\.[0-9a-f]{8}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{12}$/', $id)) {
             $this->Debug('Application ID Validation', 'ID is invalid');
             /** @noinspection PhpUndefinedMethodInspection */
             $this->SetStatus(self::STATUS_ERROR_APPLICATION_ID_INVALID);
@@ -201,20 +205,15 @@ abstract class WebHookIOModule extends BaseWebHookIOModule implements IOInterfac
         }
         $this->Debug('Application ID Validation', 'ID is valid');
 
-        // Validate User ID (optional, only prefix; no fixed length)
-        $id = (string)$this->GetAllowedUserId();
-        if ($id !== '') {
-            if (!preg_match('/^amzn1\.ask\.account\.[0-9A-Z]+$/', $id)) {
-                $this->Debug('User ID Validation', 'ID is invalid');
-                /** @noinspection PhpUndefinedMethodInspection */
-                $this->SetStatus(self::STATUS_ERROR_USER_ID_INVALID);
-                return;
-            }
-            $this->Debug('User ID Validation', 'ID is valid');
-        } else {
-            // Empty = allow all users (no whitelist)
-            $this->Debug('User ID Validation', 'ID is empty (allow all users)');
+        // Validate User ID
+        $id = $this->GetAllowedUserId();
+        if (! preg_match('/^amzn1\.ask\.account\.[0-9A-Z]{207}$/', $id)) {
+            $this->Debug('User ID Validation', 'ID is invalid');
+            /** @noinspection PhpUndefinedMethodInspection */
+            $this->SetStatus(self::STATUS_ERROR_USER_ID_INVALID);
+            return;
         }
+        $this->Debug('User ID Validation', 'ID is valid');
 
         // Validate Launch Request Intent ID
         $id = $this->GetLaunchIntentId();
@@ -243,7 +242,6 @@ abstract class WebHookIOModule extends BaseWebHookIOModule implements IOInterfac
             $this->Debug('Launch Request Intent ID Validation', 'ID is valid');
         }
 
-        // Parent will validate/register the WebHook (so that /hook/<subpath> exists)
         parent::Configure();
     }
 
@@ -288,4 +286,5 @@ abstract class WebHookIOModule extends BaseWebHookIOModule implements IOInterfac
         /** @noinspection PhpUndefinedMethodInspection */
         return @$this->ReadPropertyInteger('LaunchIntentID');
     }
+
 }
