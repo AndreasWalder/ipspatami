@@ -175,7 +175,7 @@ class Log
      */
     public static function Log($tag, $message, array $data = null, $level = null)
     {
-        self::$logger->Log($tag, $message, $data, $level);
+        //self::$logger->Log($tag, $message, $data, $level);
     }
 
     /**
@@ -187,7 +187,7 @@ class Log
      */
     public static function Emergency($tag, $message, array $data = null)
     {
-        self::$logger->Emergency($tag, $message, $data);
+        //self::$logger->Emergency($tag, $message, $data);
     }
 
     /**
@@ -199,7 +199,7 @@ class Log
      */
     public static function Alert($tag, $message, array $data = null)
     {
-        self::$logger->Alert($tag, $message, $data);
+        //self::$logger->Alert($tag, $message, $data);
     }
 
     /**
@@ -211,7 +211,7 @@ class Log
      */
     public static function Critical($tag, $message, array $data = null)
     {
-        self::$logger->Critical($tag, $message, $data);
+        //self::$logger->Critical($tag, $message, $data);
     }
 
     /**
@@ -223,7 +223,7 @@ class Log
      */
     public static function Error($tag, $message, array $data = null)
     {
-        self::$logger->Error($tag, $message, $data);
+        //self::$logger->Error($tag, $message, $data);
     }
 
     /**
@@ -235,7 +235,7 @@ class Log
      */
     public static function Warning($tag, $message, array $data = null)
     {
-        self::$logger->Warning($tag, $message, $data);
+        //self::$logger->Warning($tag, $message, $data);
     }
 
     /**
@@ -247,7 +247,7 @@ class Log
      */
     public static function Notice($tag, $message, array $data = null)
     {
-        self::$logger->Notice($tag, $message, $data);
+        //self::$logger->Notice($tag, $message, $data);
     }
 
     /**
@@ -259,7 +259,7 @@ class Log
      */
     public static function Info($tag, $message, array $data = null)
     {
-        self::$logger->Info($tag, $message, $data);
+        //self::$logger->Info($tag, $message, $data);
     }
 
     /**
@@ -271,7 +271,7 @@ class Log
      */
     public static function Debug($tag, $message, array $data = null)
     {
-        self::$logger->Debug($tag, $message, $data);
+        //self::$logger->Debug($tag, $message, $data);
     }
 
 }
