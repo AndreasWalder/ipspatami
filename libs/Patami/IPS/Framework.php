@@ -254,6 +254,7 @@ class Framework
      */
     public static function IsExtendedDebuggingEnabled()
     {
+        return false;
         // Get and return the setting
         return self::GetInstance()->GetProperty('ExtendedDebuggingEnabled');
     }
@@ -264,6 +265,7 @@ class Framework
      */
     public static function IsErrorHandlerEnabled()
     {
+        return false;
         // Get and return the setting
         return self::GetInstance()->GetProperty('ErrorHandlerEnabled');
     }
