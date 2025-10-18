@@ -200,17 +200,36 @@ class IPSLive
     }
 
     /**
+     * Safely returns a single field from the IPS license information array.
+     *
+     * @param string $field   Name of the field in the info structure.
+     * @param bool   $refresh True if the cached information should be refreshed.
+     *
+     * @return mixed|null Value of the requested field or null if it is not available.
+     */
+    protected static function GetInfoField($field, $refresh = false)
+    {
+        $info = self::GetInfo($refresh);
+
+        if (!is_array($info)) {
+            return null;
+        }
+
+        if (!array_key_exists($field, $info)) {
+            return null;
+        }
+
+        return $info[$field];
+    }
+
+    /**
      * Returns the IPS license type.
      * @param bool $refresh True if the cached information should be refreshed.
      * @return string|null IPS license type or null if the information could not be determined.
      */
     public static function GetLicenseType($refresh = false)
     {
-        // Get the information
-        $info = self::GetInfo($refresh);
-
-        // Return the license type
-        return @$info['licenseType'];
+        return self::GetInfoField('licenseType', $refresh);
     }
 
     /**
@@ -305,11 +324,7 @@ class IPSLive
      */
     public static function GetLicenseEmail($refresh = false)
     {
-        // Get the information
-        $info = self::GetInfo($refresh);
-
-        // Return the email address
-        return @$info['licenseEmail'];
+        return self::GetInfoField('licenseEmail', $refresh);
     }
 
     /**
@@ -319,11 +334,7 @@ class IPSLive
      */
     public static function GetVersionDate($refresh = false)
     {
-        // Get the information
-        $info = self::GetInfo($refresh);
-
-        // Return the email address
-        return @$info['versionDate'];
+        return self::GetInfoField('versionDate', $refresh);
     }
 
     /**
@@ -333,11 +344,7 @@ class IPSLive
      */
     public static function GetInstalledDate($refresh = false)
     {
-        // Get the information
-        $info = self::GetInfo($refresh);
-
-        // Return the email address
-        return @$info['installedDate'];
+        return self::GetInfoField('installedDate', $refresh);
     }
 
     /**
@@ -347,11 +354,7 @@ class IPSLive
      */
     public static function GetSubscriptionEndDate($refresh = false)
     {
-        // Get the information
-        $info = self::GetInfo($refresh);
-
-        // Return the email address
-        return @$info['subscriptionEndDate'];
+        return self::GetInfoField('subscriptionEndDate', $refresh);
     }
 
     /**
