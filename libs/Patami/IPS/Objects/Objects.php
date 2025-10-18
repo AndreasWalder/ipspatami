@@ -61,16 +61,35 @@ class Objects
 
         // Get the object type
         $info = IPS::GetObject($objectId);
-        $type = @$info['ObjectType'];
+
+        if (is_object($info)) {
+            $info = get_object_vars($info);
+        }
+
+        if (!is_array($info)) {
+            $info = [];
+        }
+
+        $type = array_key_exists('ObjectType', $info) ? $info['ObjectType'] : null;
         $subType = null;
 
         // Get the object info
-        $objectInfo = @$info['ObjectInfo'];
-        $objectInfo = @json_decode($objectInfo, true);
+        $objectInfo = array_key_exists('ObjectInfo', $info) ? $info['ObjectInfo'] : null;
+
+        if (is_object($objectInfo)) {
+            $objectInfo = get_object_vars($objectInfo);
+        } elseif (is_string($objectInfo)) {
+            $decodedInfo = json_decode($objectInfo, true);
+            $objectInfo = is_array($decodedInfo) ? $decodedInfo : [];
+        }
+
+        if (!is_array($objectInfo)) {
+            $objectInfo = [];
+        }
 
         // Get the class name from the object info
         /** @var $objectClassName IPSObject */
-        $objectClassName = @$objectInfo['className'];
+        $objectClassName = array_key_exists('className', $objectInfo) ? $objectInfo['className'] : null;
 
         if (is_null($objectClassName)) {
             // No object info or no class name
@@ -79,7 +98,16 @@ class Objects
                 case IPSObject::TYPE_VARIABLE:
                     // Get the variable info
                     $varInfo = IPS::GetVariable($objectId);
-                    $subType = @$varInfo['VariableType'];
+
+                    if (is_object($varInfo)) {
+                        $varInfo = get_object_vars($varInfo);
+                    }
+
+                    if (!is_array($varInfo)) {
+                        $varInfo = [];
+                    }
+
+                    $subType = array_key_exists('VariableType', $varInfo) ? $varInfo['VariableType'] : null;
                     break;
             }
             // Get the object class name
