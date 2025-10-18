@@ -157,6 +157,44 @@ abstract class IPSObject implements DebugInterface
     }
 
     /**
+     * Loads the IPS object information as an array.
+     *
+     * @return array|null Object information or null if unavailable.
+     */
+    private function LoadObjectInfo()
+    {
+        $info = IPS::GetObject($this->objectId);
+
+        if (is_object($info)) {
+            $info = get_object_vars($info);
+        }
+
+        if (!is_array($info)) {
+            return null;
+        }
+
+        return $info;
+    }
+
+    /**
+     * Loads a field from the IPS object information.
+     *
+     * @param string $fieldName Field name to return.
+     * @param mixed $default Default value when the field is missing.
+     * @return mixed The field value or the default value.
+     */
+    private function LoadObjectInfoField($fieldName, $default = null)
+    {
+        $info = $this->LoadObjectInfo();
+
+        if (is_null($info) || !array_key_exists($fieldName, $info)) {
+            return $default;
+        }
+
+        return $info[$fieldName];
+    }
+
+    /**
      * Creates a new IPS object and returns its IPS object ID.
      * Child classes need to implement the specific code to create the respective IPS object type.
      * @return int IPS object ID of the new object.
@@ -204,11 +242,7 @@ abstract class IPSObject implements DebugInterface
      */
     public function GetType()
     {
-        // Get object info from IPS
-        $info = IPS::GetObject($this->objectId);
-
-        // Return the object type
-        return @$info['ObjectType'];
+        return $this->LoadObjectInfoField('ObjectType');
     }
 
     /**
@@ -250,11 +284,7 @@ abstract class IPSObject implements DebugInterface
      */
     public function GetIdent()
     {
-        // Get object info from IPS
-        $info = IPS::GetObject($this->objectId);
-
-        // Return the object ident
-        return @$info['ObjectIdent'];
+        return $this->LoadObjectInfoField('ObjectIdent');
     }
 
     /**
@@ -297,11 +327,7 @@ abstract class IPSObject implements DebugInterface
      */
     public function IsDisabled()
     {
-        // Get object info from IPS
-        $info = IPS::GetObject($this->objectId);
-
-        // Return if the object is disabled
-        return @$info['ObjectIsDisabled'] == true;
+        return $this->LoadObjectInfoField('ObjectIsDisabled', false) == true;
     }
 
     /**
@@ -359,11 +385,7 @@ abstract class IPSObject implements DebugInterface
      */
     public function IsHidden()
     {
-        // Get object info from IPS
-        $info = IPS::GetObject($this->objectId);
-
-        // Return if the object is hidden
-        return @$info['ObjectIsHidden'] == true;
+        return $this->LoadObjectInfoField('ObjectIsHidden', false) == true;
     }
 
     /**
@@ -439,11 +461,7 @@ abstract class IPSObject implements DebugInterface
      */
     public function GetIcon()
     {
-        // Get object info from IPS
-        $info = IPS::GetObject($this->objectId);
-
-        // Return the object icon
-        return @$info['ObjectIcon'];
+        return $this->LoadObjectInfoField('ObjectIcon');
     }
 
     /**
@@ -454,11 +472,7 @@ abstract class IPSObject implements DebugInterface
      */
     public function GetInfo()
     {
-        // Get object info from IPS
-        $info = IPS::GetObject($this->objectId);
-
-        // Return the object info
-        return @$info['ObjectInfo'];
+        return $this->LoadObjectInfoField('ObjectInfo');
     }
 
     /**
@@ -550,11 +564,7 @@ abstract class IPSObject implements DebugInterface
      */
     public function GetSummary()
     {
-        // Get object info from IPS
-        $info = IPS::GetObject($this->objectId);
-
-        // Return the object summary
-        return @$info['ObjectSummary'];
+        return $this->LoadObjectInfoField('ObjectSummary');
     }
 
     /**
@@ -564,11 +574,7 @@ abstract class IPSObject implements DebugInterface
      */
     public function IsReadOnly()
     {
-        // Get object info from IPS
-        $info = IPS::GetObject($this->objectId);
-
-        // Return if the object is read-only
-        return @$info['ObjectIsReadOnly'] == true;
+        return $this->LoadObjectInfoField('ObjectIsReadOnly', false) == true;
     }
 
     /**
@@ -700,11 +706,7 @@ abstract class IPSObject implements DebugInterface
      */
     public function GetPosition()
     {
-        // Get object info from IPS
-        $info = IPS::GetObject($this->objectId);
-
-        // Return the object position (index)
-        return @$info['ObjectPosition'];
+        return $this->LoadObjectInfoField('ObjectPosition');
     }
 
     /**
