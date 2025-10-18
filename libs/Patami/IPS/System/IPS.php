@@ -629,8 +629,23 @@ class IPS
      */
     public static function GetObjectIdByIdent($ident, $objectId)
     {
-        /** @noinspection PhpUndefinedFunctionInspection */
-        return @IPS_GetObjectIDByIdent($ident, $objectId);
+        $children = self::GetChildrenIds($objectId);
+        if (!is_array($children)) {
+            return false;
+        }
+
+        foreach ($children as $childId) {
+            $object = self::GetObject($childId);
+            if (!is_array($object)) {
+                continue;
+            }
+
+            if (array_key_exists('ObjectIdent', $object) && ($object['ObjectIdent'] === $ident)) {
+                return $childId;
+            }
+        }
+
+        return false;
     }
 
     /**
