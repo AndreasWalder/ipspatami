@@ -54,38 +54,167 @@ class IntentSlots extends RequestData
     {
         // 1) Session-Slots in die Basisklasse laden
         parent::__construct($sessionSlots);
-    
+
         // 2) Sicherstellen, dass data existiert
         if (!is_array($this->data)) {
             $this->data = [];
         }
-    
+
+        // 2a) Session-Slots in das neue Schema (value/id) überführen
+        foreach ($this->data as $name => $slotData) {
+            $this->data[$name] = $this->NormalizeSlotData($slotData);
+        }
+
         // 3) Default für callbackIntent setzen (verhindert Undefined-Array-Key später)
         if (!array_key_exists('callbackIntent', $this->data)) {
             $this->data['callbackIntent'] = null;
         }
-    
+
         // 4) Eingehende Slots sauber mergen (ohne @, mit Fallbacks)
         foreach ($slots as $slot) {
             if (!is_array($slot)) {
                 // tolerante Weiterverarbeitung statt Exception
                 continue;
             }
-    
+
             $slotName  = $slot['name']  ?? null;
             if ($slotName === null || $slotName === '') {
                 throw new InvalidIntentSlotsException('Missing slot name');
             }
-    
+
             $slotValue = $slot['value'] ?? null;
-    
+
             // Optional: 'CallbackIntent' (andere Schreibweisen) normalisieren
             if (strcasecmp($slotName, 'callbackIntent') === 0) {
                 $slotName = 'callbackIntent';
             }
-    
-            $this->data[$slotName] = $slotValue;
+
+            $this->data[$slotName] = $this->NormalizeSlotData($slotValue, $slot);
         }
     }
 
+    /**
+     * Returns the slot resolution id (entity id) for a given slot name, if available.
+     * @param string $name Slot name.
+     * @return string|null Resolution id or null if not present.
+     */
+    public function GetId($name)
+    {
+        $slot = $this->data[$name] ?? null;
+
+        if (!is_array($slot)) {
+            return null;
+        }
+
+        return $slot['id'] ?? null;
+    }
+
+    /**
+     * Returns the slot value (string) even though internal representation may hold additional metadata.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function &__get($name)
+    {
+        if (!array_key_exists($name, $this->data)) {
+            $null = null;
+            return $null;
+        }
+
+        $slotData = &$this->data[$name];
+
+        if (is_array($slotData) && array_key_exists('value', $slotData)) {
+            return $slotData['value'];
+        }
+
+        return $slotData;
+    }
+
+    /**
+     * Returns the slot value (string) even though internal representation may hold additional metadata.
+     *
+     * @param int|string $offset
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetGet($offset)
+    {
+        $value = parent::offsetGet($offset);
+        return $this->GetValueFromSlot($value);
+    }
+
+    /**
+     * Normalizes a slot payload into a structure containing the spoken value and the resolved id (if present).
+     *
+     * @param mixed $slotValue String or array from previous session payload.
+     * @param array|null $slotRaw Raw slot array from Alexa request (contains resolutions, etc.).
+     * @return array
+     */
+    private function NormalizeSlotData($slotValue, ?array $slotRaw = null)
+    {
+        $value = $slotValue;
+        $id    = null;
+
+        if (is_array($slotValue)) {
+            $value = $slotValue['value'] ?? null;
+            $id    = $slotValue['id'] ?? null;
+        }
+
+        if ($slotRaw !== null) {
+            $idFromSlot = $slotRaw['id'] ?? null;
+            $idFromResolution = $this->ExtractResolutionId($slotRaw);
+
+            if (!empty($idFromSlot)) {
+                $id = $idFromSlot;
+            } elseif (!empty($idFromResolution)) {
+                $id = $idFromResolution;
+            }
+        }
+
+        return [
+            'value' => $value,
+            'id'    => $id,
+        ];
+    }
+
+    /**
+     * Extracts the first resolution id from the Alexa slot structure.
+     *
+     * @param array $slotRaw
+     * @return string|null
+     */
+    private function ExtractResolutionId(array $slotRaw)
+    {
+        $resolutions = $slotRaw['resolutions']['resolutionsPerAuthority'] ?? [];
+
+        foreach ($resolutions as $resolution) {
+            $values = $resolution['values'] ?? [];
+            if (!is_array($values) || count($values) === 0) {
+                continue;
+            }
+
+            $id = $values[0]['value']['id'] ?? null;
+            if (!empty($id)) {
+                return $id;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Helper to unwrap a normalized slot and return the spoken value.
+     *
+     * @param mixed $slotData
+     * @return mixed
+     */
+    private function GetValueFromSlot($slotData)
+    {
+        if (is_array($slotData) && array_key_exists('value', $slotData)) {
+            return $slotData['value'];
+        }
+
+        return $slotData;
+    }
 }
